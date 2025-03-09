@@ -7,7 +7,7 @@
 // Test fixture
 class SchemaTest : public ::testing::Test {
 protected:
-    void* schema;
+    retldb_schema_t* schema;
     const retldb_datatype_t* int_type;
     const retldb_datatype_t* string_type;
     
@@ -45,7 +45,7 @@ TEST_F(SchemaTest, CreateSchema) {
     EXPECT_EQ(nullptr, schema_create(NULL));
     
     // Create another schema
-    void* another_schema = schema_create("ANOTHER_SCHEMA");
+    retldb_schema_t* another_schema = schema_create("ANOTHER_SCHEMA");
     EXPECT_NE(nullptr, another_schema);
     
     // Free it
