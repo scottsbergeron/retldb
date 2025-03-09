@@ -128,4 +128,4 @@ TEST_F(SchemaTest, ValidateSchema) {
     
     // Test with NULL schema (should be invalid)
     EXPECT_NE(0, schema_validate(NULL));
-} 
+}

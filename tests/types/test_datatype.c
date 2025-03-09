@@ -113,4 +113,4 @@ TEST_F(DataTypeTest, LookupType) {
     EXPECT_NE(nullptr, datatype_get_by_name("TEST_TYPE"));
     EXPECT_EQ(nullptr, datatype_get_by_name("NON_EXISTENT_TYPE"));
     EXPECT_EQ(nullptr, datatype_get_by_name(NULL));
-} 
+}

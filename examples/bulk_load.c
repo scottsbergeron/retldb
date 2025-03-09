@@ -54,4 +54,4 @@ int main(int argc, char** argv) {
     
     printf("Bulk load completed successfully\n");
     return 0;
-} 
+}

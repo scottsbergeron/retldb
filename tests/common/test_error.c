@@ -16,4 +16,4 @@ TEST(ErrorTest, ErrorStringValid) {
 TEST(ErrorTest, ErrorStringInvalid) {
     EXPECT_STREQ("Invalid error code", retldb_error_string(-1));
     EXPECT_STREQ("Invalid error code", retldb_error_string(RETLDB_ERROR_UNKNOWN + 1));
-} 
+}

@@ -226,4 +226,4 @@ int schema_validate(const retldb_schema_t* schema);
 }
 #endif
 
-#endif /* RETLDB_TYPES_H */ 
+#endif /* RETLDB_TYPES_H */

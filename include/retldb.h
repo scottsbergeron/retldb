@@ -9,6 +9,10 @@
 #ifndef RETLDB_H
 #define RETLDB_H
 
+#include "retldb/error.h"
+#include "retldb/storage.h"
+#include "retldb/types.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -193,4 +197,4 @@ void retldb_version(int* major, int* minor, int* patch);
 }
 #endif
 
-#endif /* RETLDB_H */ 
+#endif /* RETLDB_H */

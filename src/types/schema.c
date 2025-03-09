@@ -274,4 +274,4 @@ int schema_validate(const retldb_schema_t* schema) {
     }
     
     return 0;
-} 
+}

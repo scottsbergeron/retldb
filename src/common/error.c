@@ -20,4 +20,4 @@ const char* retldb_error_string(retldb_error_t error) {
         return "Invalid error code";
     }
     return error_messages[error];
-} 
+}

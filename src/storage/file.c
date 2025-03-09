@@ -67,4 +67,4 @@ int file_close(void* file) {
     }
     
     return fclose((FILE*)file);
-} 
+}

@@ -37,4 +37,4 @@ const char* retldb_error_string(retldb_error_t error);
 }
 #endif
 
-#endif /* RETLDB_ERROR_H */ 
+#endif /* RETLDB_ERROR_H */

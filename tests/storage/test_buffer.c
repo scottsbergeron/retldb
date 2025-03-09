@@ -118,4 +118,4 @@ TEST_F(BufferTest, DirtyBuffers) {
     // Test error handling
     EXPECT_NE(0, buffer_mark_dirty(nullptr));
     EXPECT_NE(0, buffer_flush(nullptr));
-} 
+}

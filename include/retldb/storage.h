@@ -137,4 +137,4 @@ int buffer_flush_all(void);
 }
 #endif
 
-#endif /* RETLDB_STORAGE_H */ 
+#endif /* RETLDB_STORAGE_H */

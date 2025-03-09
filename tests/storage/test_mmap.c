@@ -114,4 +114,4 @@ TEST_F(MmapTest, ErrorHandling) {
     EXPECT_EQ(nullptr, mmap_get_addr(nullptr));
     EXPECT_EQ(0, mmap_get_size(nullptr));
     EXPECT_NE(0, mmap_unmap(nullptr));
-} 
+}

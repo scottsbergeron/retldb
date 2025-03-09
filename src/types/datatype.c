@@ -250,4 +250,4 @@ void* datatype_deserialize(const retldb_datatype_t* type, const void* data, size
     }
     
     return NULL;
-} 
+}
