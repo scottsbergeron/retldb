@@ -3,6 +3,9 @@
  * @brief Implementation of schema management for rETL DB
  */
 
+/* Define _POSIX_C_SOURCE to make strdup available */
+#define _POSIX_C_SOURCE 200809L
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -222,13 +225,16 @@ void* schema_serialize(const retldb_schema_t* schema, size_t* size) {
  * @brief Deserialize a schema from a binary format
  * 
  * @param data Serialized data
- * @param size Size of the serialized data
+ * @param size Size of the serialized data (unused for now)
  * @return Deserialized schema, NULL on failure
  */
 retldb_schema_t* schema_deserialize(const void* data, size_t size) {
     if (!data) {
         return NULL;
     }
+    
+    // Suppress unused parameter warning
+    (void)size;
     
     // In a real implementation, this would deserialize the schema from a binary format
     // For now, we just return a placeholder
