@@ -5,6 +5,9 @@
 #  SNAPPY_INCLUDE_DIRS - The Snappy include directories
 #  SNAPPY_LIBRARIES - The Snappy libraries
 #  SNAPPY_VERSION - The Snappy version string
+#
+# and the following imported target:
+#  Snappy::Snappy - The Snappy library
 
 # Try to find Snappy using pkg-config first
 find_package(PkgConfig QUIET)
@@ -62,6 +65,15 @@ find_package_handle_standard_args(Snappy
 if(SNAPPY_FOUND)
   set(SNAPPY_LIBRARIES ${SNAPPY_LIBRARY})
   set(SNAPPY_INCLUDE_DIRS ${SNAPPY_INCLUDE_DIR})
+  
+  # Create imported target
+  if(NOT TARGET Snappy::Snappy)
+    add_library(Snappy::Snappy UNKNOWN IMPORTED)
+    set_target_properties(Snappy::Snappy PROPERTIES
+      IMPORTED_LOCATION "${SNAPPY_LIBRARY}"
+      INTERFACE_INCLUDE_DIRECTORIES "${SNAPPY_INCLUDE_DIR}"
+    )
+  endif()
 endif()
 
 # Mark as advanced

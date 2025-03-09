@@ -5,6 +5,9 @@
 #  LZ4_INCLUDE_DIRS - The LZ4 include directories
 #  LZ4_LIBRARIES - The LZ4 libraries
 #  LZ4_VERSION - The LZ4 version string
+#
+# and the following imported target:
+#  LZ4::LZ4 - The LZ4 library
 
 # Try to find LZ4 using pkg-config first
 find_package(PkgConfig QUIET)
@@ -62,6 +65,15 @@ find_package_handle_standard_args(LZ4
 if(LZ4_FOUND)
   set(LZ4_LIBRARIES ${LZ4_LIBRARY})
   set(LZ4_INCLUDE_DIRS ${LZ4_INCLUDE_DIR})
+  
+  # Create imported target
+  if(NOT TARGET LZ4::LZ4)
+    add_library(LZ4::LZ4 UNKNOWN IMPORTED)
+    set_target_properties(LZ4::LZ4 PROPERTIES
+      IMPORTED_LOCATION "${LZ4_LIBRARY}"
+      INTERFACE_INCLUDE_DIRECTORIES "${LZ4_INCLUDE_DIR}"
+    )
+  endif()
 endif()
 
 # Mark as advanced
