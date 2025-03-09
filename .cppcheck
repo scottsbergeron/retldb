@@ -1,22 +1,3 @@
-<?xml version="1.0"?>
-<suppressions>
-    <!-- Suppress warnings about missing system includes -->
-    <suppress>
-        <id>missingIncludeSystem</id>
-    </suppress>
-    
-    <!-- Suppress warnings about unused functions that are part of the API -->
-    <suppress>
-        <id>unusedFunction</id>
-        <fileName>*</fileName>
-        <!-- These functions are part of the public API and will be used by clients -->
-    </suppress>
-    
-    <!-- Suppress warnings about missing includes for retldb.h -->
-    <!-- This is a known issue with the include path in the CI environment -->
-    <suppress>
-        <id>missingInclude</id>
-        <fileName>*</fileName>
-        <symbolName>retldb.h</symbolName>
-    </suppress>
-</suppressions>
+missingIncludeSystem
+unusedFunction
+missingInclude:*:retldb.h
