@@ -71,4 +71,4 @@ retldb_error_t retldb_db_close(retldb_db_t* db) {
     free(db);
     
     return RETLDB_OK;
-} 
+}
