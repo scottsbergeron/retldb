@@ -112,7 +112,7 @@ void* mmap_file(const char* filename, size_t size, int read_only) {
         return NULL;
     }
     
-    handle->size = size > 0 ? size : sb.st_size;
+    handle->size = size > 0 ? size : (size_t)sb.st_size;
     
     int prot = read_only ? PROT_READ : (PROT_READ | PROT_WRITE);
     handle->addr = mmap(NULL, handle->size, prot, MAP_SHARED, handle->fd, 0);
