@@ -79,7 +79,7 @@ jobs:
         CC: ${{ matrix.cc }}
         CXX: ${{ matrix.cxx }}
       run: |
-        cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{matrix.build_type}} -DRETLDB_BUILD_TESTS=ON -DCMAKE_MODULE_PATH=${{github.workspace}}/cmake
+        cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{matrix.build_type}} -DRETLDB_BUILD_TESTS=ON -DCMAKE_MODULE_PATH="${{github.workspace}}/cmake"
 
     - name: Build
       run: cmake --build ${{github.workspace}}/build --config ${{matrix.build_type}}
