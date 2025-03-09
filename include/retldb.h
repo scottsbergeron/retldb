@@ -29,53 +29,6 @@ extern "C" {
 #endif
 
 /**
- * @brief Error codes returned by rETL DB functions
- */
-typedef enum {
-    RETLDB_OK = 0,                  /**< Operation successful */
-    RETLDB_ERROR_INVALID_ARGUMENT,  /**< Invalid argument provided */
-    RETLDB_ERROR_OUT_OF_MEMORY,     /**< Memory allocation failed */
-    RETLDB_ERROR_IO,                /**< I/O error occurred */
-    RETLDB_ERROR_CORRUPT_DATA,      /**< Data corruption detected */
-    RETLDB_ERROR_NOT_FOUND,         /**< Requested item not found */
-    RETLDB_ERROR_ALREADY_EXISTS,    /**< Item already exists */
-    RETLDB_ERROR_NOT_SUPPORTED,     /**< Operation not supported */
-    RETLDB_ERROR_UNKNOWN            /**< Unknown error */
-} retldb_error_t;
-
-/**
- * @brief Get a string description of an error code
- *
- * @param error The error code
- * @return const char* String description of the error
- */
-const char* retldb_error_string(retldb_error_t error);
-
-/**
- * @brief Data types supported by rETL DB
- */
-typedef enum {
-    RETLDB_TYPE_NULL = 0,    /**< NULL value */
-    RETLDB_TYPE_BOOLEAN,     /**< Boolean value */
-    RETLDB_TYPE_INT8,        /**< 8-bit signed integer */
-    RETLDB_TYPE_INT16,       /**< 16-bit signed integer */
-    RETLDB_TYPE_INT32,       /**< 32-bit signed integer */
-    RETLDB_TYPE_INT64,       /**< 64-bit signed integer */
-    RETLDB_TYPE_UINT8,       /**< 8-bit unsigned integer */
-    RETLDB_TYPE_UINT16,      /**< 16-bit unsigned integer */
-    RETLDB_TYPE_UINT32,      /**< 32-bit unsigned integer */
-    RETLDB_TYPE_UINT64,      /**< 64-bit unsigned integer */
-    RETLDB_TYPE_FLOAT,       /**< 32-bit floating point */
-    RETLDB_TYPE_DOUBLE,      /**< 64-bit floating point */
-    RETLDB_TYPE_STRING,      /**< UTF-8 string */
-    RETLDB_TYPE_BINARY,      /**< Binary data */
-    RETLDB_TYPE_TIMESTAMP,   /**< Timestamp (64-bit) */
-    RETLDB_TYPE_ARRAY,       /**< Array of values */
-    RETLDB_TYPE_MAP,         /**< Key-value map */
-    RETLDB_TYPE_STRUCT       /**< Structured data */
-} retldb_type_t;
-
-/**
  * @brief Database handle
  */
 typedef struct retldb_db_t retldb_db_t;
@@ -84,11 +37,6 @@ typedef struct retldb_db_t retldb_db_t;
  * @brief Table handle
  */
 typedef struct retldb_table_t retldb_table_t;
-
-/**
- * @brief Schema handle
- */
-typedef struct retldb_schema_t retldb_schema_t;
 
 /**
  * @brief Column definition
