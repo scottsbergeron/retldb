@@ -1,19 +1,8 @@
-/**
- * @file test_mmap.c
- * @brief Tests for memory-mapped file operations
- */
-
 #include <gtest/gtest.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
-// Declare functions from mmap.c that we'll test
-extern int mmap_init(void);
-extern void* mmap_file(const char* filename, size_t size, int read_only);
-extern void* mmap_get_addr(void* handle);
-extern size_t mmap_get_size(void* handle);
-extern int mmap_unmap(void* handle);
+#include "retldb/storage.h"
 
 // Test fixture
 class MmapTest : public ::testing::Test {
@@ -114,4 +103,4 @@ TEST_F(MmapTest, ErrorHandling) {
     EXPECT_EQ(nullptr, mmap_get_addr(nullptr));
     EXPECT_EQ(0, mmap_get_size(nullptr));
     EXPECT_NE(0, mmap_unmap(nullptr));
-}
+} 

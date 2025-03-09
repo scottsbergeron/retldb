@@ -1,36 +1,8 @@
-/**
- * @file test_schema.c
- * @brief Tests for schema functionality
- */
-
 #include <gtest/gtest.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
-// Forward declaration of data type
-typedef struct retldb_datatype_t retldb_datatype_t;
-
-// Declare functions from schema.c that we'll test
-extern void* schema_create(const char* name);
-extern void schema_free(void* schema);
-extern int schema_add_field(void* schema, const char* name,
-                           const retldb_datatype_t* type, int nullable,
-                           void* default_value);
-extern const void* schema_get_field(const void* schema, const char* name);
-extern const void* schema_get_field_by_index(const void* schema, int index);
-extern int schema_get_field_count(const void* schema);
-extern int schema_validate(const void* schema);
-
-// Declare functions from datatype.c that we'll use
-extern int datatype_init(void);
-extern int datatype_register(int id, const char* name, size_t size,
-                            int (*compare)(const void*, const void*),
-                            void* (*copy)(const void*),
-                            void (*free)(void*),
-                            void* (*serialize)(const void*, size_t*),
-                            void* (*deserialize)(const void*, size_t));
-extern const retldb_datatype_t* datatype_get_by_id(int id);
+#include "retldb/types.h"
 
 // Test fixture
 class SchemaTest : public ::testing::Test {
@@ -44,12 +16,12 @@ protected:
         ASSERT_EQ(0, datatype_init());
         
         // Register some test types
-        ASSERT_EQ(0, datatype_register(1, "INT", sizeof(int), NULL, NULL, NULL, NULL, NULL));
-        ASSERT_EQ(0, datatype_register(2, "STRING", 0, NULL, NULL, NULL, NULL, NULL));
+        ASSERT_EQ(0, datatype_register(RETLDB_TYPE_INT32, "INT", sizeof(int), NULL, NULL, NULL, NULL, NULL));
+        ASSERT_EQ(0, datatype_register(RETLDB_TYPE_STRING, "STRING", 0, NULL, NULL, NULL, NULL, NULL));
         
         // Get the registered types
-        int_type = datatype_get_by_id(1);
-        string_type = datatype_get_by_id(2);
+        int_type = datatype_get_by_id(RETLDB_TYPE_INT32);
+        string_type = datatype_get_by_id(RETLDB_TYPE_STRING);
         
         ASSERT_NE(nullptr, int_type);
         ASSERT_NE(nullptr, string_type);
@@ -128,4 +100,4 @@ TEST_F(SchemaTest, ValidateSchema) {
     
     // Test with NULL schema (should be invalid)
     EXPECT_NE(0, schema_validate(NULL));
-}
+} 

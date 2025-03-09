@@ -1,20 +1,8 @@
-/**
- * @file test_buffer.c
- * @brief Tests for buffer management
- */
-
 #include <gtest/gtest.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
-// Declare functions from buffer.c that we'll test
-extern int buffer_init(size_t capacity, size_t buffer_size);
-extern int buffer_cleanup(void);
-extern void* buffer_get(const char* filename, size_t offset);
-extern int buffer_mark_dirty(void* buffer);
-extern int buffer_flush(void* buffer);
-extern int buffer_flush_all(void);
+#include "retldb/storage.h"
 
 // Test fixture
 class BufferTest : public ::testing::Test {
@@ -118,4 +106,4 @@ TEST_F(BufferTest, DirtyBuffers) {
     // Test error handling
     EXPECT_NE(0, buffer_mark_dirty(nullptr));
     EXPECT_NE(0, buffer_flush(nullptr));
-}
+} 

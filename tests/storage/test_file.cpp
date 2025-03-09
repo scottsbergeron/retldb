@@ -1,18 +1,8 @@
-/**
- * @file test_file.c
- * @brief Tests for file operations
- */
-
 #include <gtest/gtest.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
-// Declare functions from file.c that we'll test
-extern int file_init(void);
-extern int file_create(const char* filename);
-extern void* file_open(const char* filename, const char* mode);
-extern int file_close(void* file);
+#include "retldb/storage.h"
 
 // Test fixture
 class FileTest : public ::testing::Test {
@@ -70,4 +60,4 @@ TEST_F(FileTest, OpenAndCloseFile) {
     
     // Cleanup
     remove(test_filename);
-}
+} 

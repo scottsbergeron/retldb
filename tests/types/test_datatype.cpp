@@ -1,23 +1,8 @@
-/**
- * @file test_datatype.c
- * @brief Tests for data type functionality
- */
-
 #include <gtest/gtest.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
-// Declare functions from datatype.c that we'll test
-extern int datatype_init(void);
-extern int datatype_register(int id, const char* name, size_t size,
-                            int (*compare)(const void*, const void*),
-                            void* (*copy)(const void*),
-                            void (*free)(void*),
-                            void* (*serialize)(const void*, size_t*),
-                            void* (*deserialize)(const void*, size_t));
-extern const void* datatype_get_by_id(int id);
-extern const void* datatype_get_by_name(const char* name);
+#include "retldb/types.h"
 
 // Simple comparison function for testing
 static int test_compare(const void* a, const void* b) {
@@ -84,33 +69,33 @@ TEST_F(DataTypeTest, Initialize) {
 // Test type registration
 TEST_F(DataTypeTest, RegisterType) {
     // Register a test type
-    EXPECT_EQ(0, datatype_register(100, "TEST_TYPE", sizeof(int),
+    EXPECT_EQ(0, datatype_register(RETLDB_TYPE_INT32, "TEST_TYPE", sizeof(int),
                                   test_compare, test_copy, test_free,
                                   test_serialize, test_deserialize));
     
     // Try to register the same type ID again (should fail)
-    EXPECT_NE(0, datatype_register(100, "ANOTHER_TYPE", sizeof(int),
+    EXPECT_NE(0, datatype_register(RETLDB_TYPE_INT32, "ANOTHER_TYPE", sizeof(int),
                                   test_compare, test_copy, test_free,
                                   test_serialize, test_deserialize));
     
     // Register another type
-    EXPECT_EQ(0, datatype_register(101, "ANOTHER_TYPE", sizeof(double),
+    EXPECT_EQ(0, datatype_register(RETLDB_TYPE_DOUBLE, "ANOTHER_TYPE", sizeof(double),
                                   NULL, NULL, NULL, NULL, NULL));
 }
 
 // Test type lookup
 TEST_F(DataTypeTest, LookupType) {
     // Register a test type
-    EXPECT_EQ(0, datatype_register(100, "TEST_TYPE", sizeof(int),
+    EXPECT_EQ(0, datatype_register(RETLDB_TYPE_INT32, "TEST_TYPE", sizeof(int),
                                   test_compare, test_copy, test_free,
                                   test_serialize, test_deserialize));
     
     // Look up by ID
-    EXPECT_NE(nullptr, datatype_get_by_id(100));
-    EXPECT_EQ(nullptr, datatype_get_by_id(999)); // Non-existent ID
+    EXPECT_NE(nullptr, datatype_get_by_id(RETLDB_TYPE_INT32));
+    EXPECT_EQ(nullptr, datatype_get_by_id(RETLDB_TYPE_BINARY)); // Non-existent ID
     
     // Look up by name
     EXPECT_NE(nullptr, datatype_get_by_name("TEST_TYPE"));
     EXPECT_EQ(nullptr, datatype_get_by_name("NON_EXISTENT_TYPE"));
     EXPECT_EQ(nullptr, datatype_get_by_name(NULL));
-}
+} 

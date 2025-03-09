@@ -4,12 +4,12 @@ find_package(GTest REQUIRED)
 # Test files
 set(RETLDB_TEST_SOURCES
     test_main.cpp
-    common/test_error.c
-    storage/test_file.c
-    storage/test_mmap.c
-    storage/test_buffer.c
-    types/test_datatype.c
-    types/test_schema.c
+    common/test_error.cpp
+    storage/test_file.cpp
+    storage/test_mmap.cpp
+    storage/test_buffer.cpp
+    types/test_datatype.cpp
+    types/test_schema.cpp
 )
 
 # Create test executable
