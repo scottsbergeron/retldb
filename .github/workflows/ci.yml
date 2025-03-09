@@ -1,0 +1,173 @@
+name: rETL DB CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    name: Build and Test
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        build_type: [Debug, Release]
+        include:
+          - os: ubuntu-latest
+            compiler: gcc
+            cc: gcc
+            cxx: g++
+          - os: ubuntu-latest
+            compiler: clang
+            cc: clang
+            cxx: clang++
+          - os: macos-latest
+            compiler: clang
+            cc: clang
+            cxx: clang++
+          - os: windows-latest
+            compiler: msvc
+            cc: cl
+            cxx: cl
+        exclude:
+          - os: windows-latest
+            compiler: gcc
+          - os: windows-latest
+            compiler: clang
+          - os: macos-latest
+            compiler: gcc
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Install Dependencies (Ubuntu)
+      if: matrix.os == 'ubuntu-latest'
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y liblz4-dev libsnappy-dev libgtest-dev valgrind clang-tidy cppcheck
+
+    - name: Install Dependencies (macOS)
+      if: matrix.os == 'macos-latest'
+      run: |
+        brew install lz4 snappy googletest llvm
+
+    - name: Install Dependencies (Windows)
+      if: matrix.os == 'windows-latest'
+      run: |
+        vcpkg install lz4:x64-windows snappy:x64-windows gtest:x64-windows
+
+    - name: Configure CMake
+      env:
+        CC: ${{ matrix.cc }}
+        CXX: ${{ matrix.cxx }}
+      run: |
+        cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{matrix.build_type}} -DRETLDB_BUILD_TESTS=ON
+
+    - name: Build
+      run: cmake --build ${{github.workspace}}/build --config ${{matrix.build_type}}
+
+    - name: Test
+      working-directory: ${{github.workspace}}/build
+      run: ctest -C ${{matrix.build_type}} --output-on-failure
+
+    - name: Static Analysis (Ubuntu)
+      if: matrix.os == 'ubuntu-latest' && matrix.compiler == 'gcc' && matrix.build_type == 'Debug'
+      run: |
+        cd ${{github.workspace}}
+        cppcheck --enable=all --suppress=missingIncludeSystem --error-exitcode=1 include/ src/
+
+    - name: Memory Check (Ubuntu)
+      if: matrix.os == 'ubuntu-latest' && matrix.compiler == 'gcc' && matrix.build_type == 'Debug'
+      run: |
+        cd ${{github.workspace}}/build
+        valgrind --leak-check=full --error-exitcode=1 ./tests/retldb_tests
+
+  sanitizers:
+    name: Sanitizers
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Install Dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y liblz4-dev libsnappy-dev libgtest-dev
+
+    - name: Configure with ASAN
+      run: |
+        cmake -B ${{github.workspace}}/build-asan -DCMAKE_BUILD_TYPE=Debug -DRETLDB_BUILD_TESTS=ON -DRETLDB_ENABLE_ASAN=ON
+
+    - name: Build with ASAN
+      run: cmake --build ${{github.workspace}}/build-asan
+
+    - name: Test with ASAN
+      working-directory: ${{github.workspace}}/build-asan
+      run: ctest --output-on-failure
+
+    - name: Configure with UBSAN
+      run: |
+        cmake -B ${{github.workspace}}/build-ubsan -DCMAKE_BUILD_TYPE=Debug -DRETLDB_BUILD_TESTS=ON -DRETLDB_ENABLE_UBSAN=ON
+
+    - name: Build with UBSAN
+      run: cmake --build ${{github.workspace}}/build-ubsan
+
+    - name: Test with UBSAN
+      working-directory: ${{github.workspace}}/build-ubsan
+      run: ctest --output-on-failure
+
+  coverage:
+    name: Code Coverage
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Install Dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y liblz4-dev libsnappy-dev libgtest-dev lcov
+
+    - name: Configure
+      run: |
+        cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=Debug -DRETLDB_BUILD_TESTS=ON
+
+    - name: Build
+      run: cmake --build ${{github.workspace}}/build
+
+    - name: Test with Coverage
+      working-directory: ${{github.workspace}}/build
+      run: |
+        ctest --output-on-failure
+        lcov --capture --directory . --output-file coverage.info
+        lcov --remove coverage.info '/usr/*' --output-file coverage.info
+        lcov --list coverage.info
+
+    - name: Upload Coverage to Codecov
+      uses: codecov/codecov-action@v3
+      with:
+        files: ${{github.workspace}}/build/coverage.info
+        fail_ci_if_error: false
+
+  docs:
+    name: Documentation
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Install Dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y doxygen graphviz
+
+    - name: Generate Documentation
+      run: |
+        doxygen Doxyfile
+
+    - name: Deploy to GitHub Pages
+      if: github.ref == 'refs/heads/main'
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./docs/html 
