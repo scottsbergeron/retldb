@@ -138,62 +138,92 @@ buffer_entry_t* buffer_get(const char* filename, size_t offset) {
         entry = entry->next;
     }
     
-    // Buffer not found, create a new one
-    entry = (buffer_entry_t*)malloc(sizeof(buffer_entry_t));
-    if (!entry) {
-        return NULL;
-    }
-    
-    entry->data = malloc(g_buffer_pool->buffer_size);
-    if (!entry->data) {
-        free(entry);
-        return NULL;
-    }
-    
-    entry->filename = strdup(filename);
-    if (!entry->filename) {
-        free(entry->data);
-        free(entry);
-        return NULL;
-    }
-    
-    entry->size = g_buffer_pool->buffer_size;
-    entry->offset = offset;
-    entry->dirty = 0;
-    
-    // Add to head of LRU list
-    entry->next = g_buffer_pool->head;
-    entry->prev = NULL;
-    if (g_buffer_pool->head) {
-        g_buffer_pool->head->prev = entry;
-    } else {
-        g_buffer_pool->tail = entry;
-    }
-    g_buffer_pool->head = entry;
-    
-    g_buffer_pool->count++;
-    
-    // If pool is full, evict the least recently used buffer
-    if (g_buffer_pool->count > g_buffer_pool->capacity) {
+    // If pool is full, reuse the least recently used buffer
+    if (g_buffer_pool->count >= g_buffer_pool->capacity) {
+        // Get the victim from the tail
         buffer_entry_t* victim = g_buffer_pool->tail;
         
         // Remove from tail
         g_buffer_pool->tail = victim->prev;
-        g_buffer_pool->tail->next = NULL;
+        if (g_buffer_pool->tail) {
+            g_buffer_pool->tail->next = NULL;
+        }
         
-        // Free resources
-        free(victim->data);
+        // If the victim is dirty, flush it (in a real implementation)
+        if (victim->dirty) {
+            // In a real implementation, this would write to the file
+            victim->dirty = 0;
+        }
+        
+        // Update the victim's metadata
         free(victim->filename);
-        free(victim);
+        victim->filename = strdup(filename);
+        if (!victim->filename) {
+            free(victim->data);
+            free(victim);
+            return NULL;
+        }
         
-        g_buffer_pool->count--;
+        victim->offset = offset;
+        victim->dirty = 0;
+        
+        // Move to head of LRU list
+        victim->next = g_buffer_pool->head;
+        victim->prev = NULL;
+        if (g_buffer_pool->head) {
+            g_buffer_pool->head->prev = victim;
+        } else {
+            g_buffer_pool->tail = victim;
+        }
+        g_buffer_pool->head = victim;
+        
+        // Load data from file (placeholder)
+        // In a real implementation, this would read from the file
+        memset(victim->data, 0, victim->size);
+        
+        return victim;
+    } else {
+        // Buffer not found and pool not full, create a new one
+        entry = (buffer_entry_t*)malloc(sizeof(buffer_entry_t));
+        if (!entry) {
+            return NULL;
+        }
+        
+        entry->data = malloc(g_buffer_pool->buffer_size);
+        if (!entry->data) {
+            free(entry);
+            return NULL;
+        }
+        
+        entry->filename = strdup(filename);
+        if (!entry->filename) {
+            free(entry->data);
+            free(entry);
+            return NULL;
+        }
+        
+        entry->size = g_buffer_pool->buffer_size;
+        entry->offset = offset;
+        entry->dirty = 0;
+        
+        // Add to head of LRU list
+        entry->next = g_buffer_pool->head;
+        entry->prev = NULL;
+        if (g_buffer_pool->head) {
+            g_buffer_pool->head->prev = entry;
+        } else {
+            g_buffer_pool->tail = entry;
+        }
+        g_buffer_pool->head = entry;
+        
+        g_buffer_pool->count++;
+        
+        // Load data from file (placeholder)
+        // In a real implementation, this would read from the file
+        memset(entry->data, 0, entry->size);
+        
+        return entry;
     }
-    
-    // Load data from file (placeholder)
-    // In a real implementation, this would read from the file
-    memset(entry->data, 0, entry->size);
-    
-    return entry;
 }
 
 /**
@@ -218,7 +248,11 @@ int buffer_mark_dirty(buffer_entry_t* entry) {
  * @return 0 on success, non-zero on failure
  */
 int buffer_flush(buffer_entry_t* entry) {
-    if (!entry || !entry->dirty) {
+    if (!entry) {
+        return -1; // Error: NULL pointer
+    }
+    
+    if (!entry->dirty) {
         return 0; // Nothing to do
     }
     
