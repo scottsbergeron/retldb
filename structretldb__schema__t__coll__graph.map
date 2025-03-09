@@ -1,0 +1,7 @@
+<map id="retldb_schema_t" name="retldb_schema_t">
+<area shape="rect" id="Node000001" title="Schema structure." alt="" coords="9,181,139,207"/>
+<area shape="rect" id="Node000002" href="$structretldb__field__t.html" title="Field structure." alt="" coords="21,93,127,119"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="77,133,77,181,71,181,71,133"/>
+<area shape="rect" id="Node000003" href="$structretldb__datatype__t.html" title="Data type structure." alt="" coords="5,5,143,31"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="77,45,77,93,71,93,71,45"/>
+</map>

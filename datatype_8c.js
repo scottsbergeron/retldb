@@ -1,0 +1,36 @@
+var datatype_8c =
+[
+    [ "retldb_datatype_t", "structretldb__datatype__t.html", "structretldb__datatype__t" ],
+    [ "MAX_TYPES", "datatype_8c.html#aa30dc4b03b37928eb85a5a389728323b", null ],
+    [ "retldb_type_id", "datatype_8c.html#aea8abf1132f2761f0c960ba6b0a96586", [
+      [ "RETLDB_TYPE_NULL", "datatype_8c.html#aea8abf1132f2761f0c960ba6b0a96586a47a815f836961267f3b4793b2cbad1a2", null ],
+      [ "RETLDB_TYPE_BOOLEAN", "datatype_8c.html#aea8abf1132f2761f0c960ba6b0a96586a699c4cf3c19f4c8b3d8ebe0499ae7ab7", null ],
+      [ "RETLDB_TYPE_INT8", "datatype_8c.html#aea8abf1132f2761f0c960ba6b0a96586a9dddd7df8f80f57d80226444181aeb1e", null ],
+      [ "RETLDB_TYPE_INT16", "datatype_8c.html#aea8abf1132f2761f0c960ba6b0a96586a98002c13676681ee905e7e9d6e128468", null ],
+      [ "RETLDB_TYPE_INT32", "datatype_8c.html#aea8abf1132f2761f0c960ba6b0a96586af3021cd25baef25c4b6d1037e81af0ac", null ],
+      [ "RETLDB_TYPE_INT64", "datatype_8c.html#aea8abf1132f2761f0c960ba6b0a96586ad57059488b223f52de6d9cb0ec13126a", null ],
+      [ "RETLDB_TYPE_UINT8", "datatype_8c.html#aea8abf1132f2761f0c960ba6b0a96586a79f56f22388d4af44663bc19cfd96795", null ],
+      [ "RETLDB_TYPE_UINT16", "datatype_8c.html#aea8abf1132f2761f0c960ba6b0a96586a7901534205c4bc341f15eb60ca107633", null ],
+      [ "RETLDB_TYPE_UINT32", "datatype_8c.html#aea8abf1132f2761f0c960ba6b0a96586af520b190e6e9714ebe2fe88b4f5872f4", null ],
+      [ "RETLDB_TYPE_UINT64", "datatype_8c.html#aea8abf1132f2761f0c960ba6b0a96586aa9d61491a64e4e15bb4d3980d30aa989", null ],
+      [ "RETLDB_TYPE_FLOAT", "datatype_8c.html#aea8abf1132f2761f0c960ba6b0a96586a362cbafda754a11f34ba24a345803972", null ],
+      [ "RETLDB_TYPE_DOUBLE", "datatype_8c.html#aea8abf1132f2761f0c960ba6b0a96586ae0a72dbed9594bd51402510936c8b680", null ],
+      [ "RETLDB_TYPE_STRING", "datatype_8c.html#aea8abf1132f2761f0c960ba6b0a96586a2df469758efe382ba2818c4fad420ba2", null ],
+      [ "RETLDB_TYPE_BINARY", "datatype_8c.html#aea8abf1132f2761f0c960ba6b0a96586a3f0c93cdfb0f9db801025fdc1a9d52ad", null ],
+      [ "RETLDB_TYPE_TIMESTAMP", "datatype_8c.html#aea8abf1132f2761f0c960ba6b0a96586aa59ad26a08eeb5bbb41b9e624d874274", null ],
+      [ "RETLDB_TYPE_ARRAY", "datatype_8c.html#aea8abf1132f2761f0c960ba6b0a96586af45ff5d7a94673f7db1a2720a4392c64", null ],
+      [ "RETLDB_TYPE_MAP", "datatype_8c.html#aea8abf1132f2761f0c960ba6b0a96586a08ba709f5c0bec2d35c5f34fdc2f48b4", null ],
+      [ "RETLDB_TYPE_STRUCT", "datatype_8c.html#aea8abf1132f2761f0c960ba6b0a96586a80f5229891ea51e5f4ceb1ea72100383", null ]
+    ] ],
+    [ "datatype_compare", "datatype_8c.html#a9aac1bc3c01d198cef5f337d49f57ce0", null ],
+    [ "datatype_copy", "datatype_8c.html#a8dd1dad5855fca9b9e8bfe3cd83994d0", null ],
+    [ "datatype_deserialize", "datatype_8c.html#aa0a5001cb9b1465d5fb497de499c4bcf", null ],
+    [ "datatype_free", "datatype_8c.html#a22f159c53949f0cfbe5d3f8a509522d4", null ],
+    [ "datatype_get_by_id", "datatype_8c.html#a16322ee01fc65bf40c867b765a5ea09b", null ],
+    [ "datatype_get_by_name", "datatype_8c.html#a44bea415cc0884d7762f11a88d6d371b", null ],
+    [ "datatype_init", "datatype_8c.html#a86ac0f7dbfabb772a307f04bdf31ea85", null ],
+    [ "datatype_register", "datatype_8c.html#a56411d245a73b09146666a5a399908d9", null ],
+    [ "datatype_serialize", "datatype_8c.html#a72d5716508f9bd20dfb8bde0164758fc", null ],
+    [ "g_type_count", "datatype_8c.html#aacf2c9042099d42b504419e4d2c65c66", null ],
+    [ "g_type_registry", "datatype_8c.html#a00b8950b078ffe7bc4afa59e6c6513e6", null ]
+];

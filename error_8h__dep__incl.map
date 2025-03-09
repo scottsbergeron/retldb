@@ -1,0 +1,9 @@
+<map id="include/retldb/error.h" name="include/retldb/error.h">
+<area shape="rect" id="Node000001" title="Error handling for rETL DB." alt="" coords="75,5,232,31"/>
+<area shape="rect" id="Node000002" href="$retldb_8h.html" title="Main header file for the rETL DB library." alt="" coords="92,79,215,104"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="156,44,156,79,151,79,151,44"/>
+<area shape="rect" id="Node000003" href="$db_8c.html" title="Implementation of database operations for rETL DB." alt="" coords="5,152,139,177"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="132,115,87,154,84,150,128,111"/>
+<area shape="rect" id="Node000004" href="$error_8c.html" title=" " alt="" coords="163,152,309,177"/>
+<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="179,111,224,150,221,154,175,115"/>
+</map>
