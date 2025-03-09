@@ -16,25 +16,25 @@ extern "C" {
  * @brief Data type enumeration
  */
 typedef enum {
-    RETLDB_TYPE_NULL = 0,
-    RETLDB_TYPE_BOOLEAN,
-    RETLDB_TYPE_INT8,
-    RETLDB_TYPE_INT16,
-    RETLDB_TYPE_INT32,
-    RETLDB_TYPE_INT64,
-    RETLDB_TYPE_UINT8,
-    RETLDB_TYPE_UINT16,
-    RETLDB_TYPE_UINT32,
-    RETLDB_TYPE_UINT64,
-    RETLDB_TYPE_FLOAT,
-    RETLDB_TYPE_DOUBLE,
-    RETLDB_TYPE_STRING,
-    RETLDB_TYPE_BINARY,
-    RETLDB_TYPE_TIMESTAMP,
-    RETLDB_TYPE_ARRAY,
-    RETLDB_TYPE_MAP,
-    RETLDB_TYPE_STRUCT
-} retldb_type_id;
+    RETLDB_TYPE_NULL = 0,    /**< NULL value */
+    RETLDB_TYPE_BOOLEAN,     /**< Boolean value */
+    RETLDB_TYPE_INT8,        /**< 8-bit signed integer */
+    RETLDB_TYPE_INT16,       /**< 16-bit signed integer */
+    RETLDB_TYPE_INT32,       /**< 32-bit signed integer */
+    RETLDB_TYPE_INT64,       /**< 64-bit signed integer */
+    RETLDB_TYPE_UINT8,       /**< 8-bit unsigned integer */
+    RETLDB_TYPE_UINT16,      /**< 16-bit unsigned integer */
+    RETLDB_TYPE_UINT32,      /**< 32-bit unsigned integer */
+    RETLDB_TYPE_UINT64,      /**< 64-bit unsigned integer */
+    RETLDB_TYPE_FLOAT,       /**< 32-bit floating point */
+    RETLDB_TYPE_DOUBLE,      /**< 64-bit floating point */
+    RETLDB_TYPE_STRING,      /**< UTF-8 string */
+    RETLDB_TYPE_BINARY,      /**< Binary data */
+    RETLDB_TYPE_TIMESTAMP,   /**< Timestamp (64-bit) */
+    RETLDB_TYPE_ARRAY,       /**< Array of values */
+    RETLDB_TYPE_MAP,         /**< Key-value map */
+    RETLDB_TYPE_STRUCT       /**< Structured data */
+} retldb_type_t;
 
 /**
  * @brief Data type structure
@@ -71,7 +71,7 @@ int datatype_init(void);
  * @param deserialize Deserialization function
  * @return 0 on success, non-zero on failure
  */
-int datatype_register(retldb_type_id id, const char* name, size_t size,
+int datatype_register(retldb_type_t id, const char* name, size_t size,
                       int (*compare)(const void*, const void*),
                       void* (*copy)(const void*),
                       void (*free)(void*),
@@ -84,7 +84,7 @@ int datatype_register(retldb_type_id id, const char* name, size_t size,
  * @param id Type ID
  * @return Data type, NULL if not found
  */
-const retldb_datatype_t* datatype_get_by_id(retldb_type_id id);
+const retldb_datatype_t* datatype_get_by_id(retldb_type_t id);
 
 /**
  * @brief Get a data type by name

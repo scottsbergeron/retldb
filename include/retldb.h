@@ -9,14 +9,6 @@
 #ifndef RETLDB_H
 #define RETLDB_H
 
-#include "retldb/error.h"
-#include "retldb/storage.h"
-#include "retldb/types.h"
-
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 #include <stdint.h>
 #include <stddef.h>
 
@@ -26,6 +18,15 @@ extern "C" {
 #define RETLDB_VERSION_MAJOR 0
 #define RETLDB_VERSION_MINOR 1
 #define RETLDB_VERSION_PATCH 0
+
+/* Include module-specific headers */
+#include "retldb/error.h"
+#include "retldb/types.h"
+#include "retldb/storage.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /**
  * @brief Error codes returned by rETL DB functions
