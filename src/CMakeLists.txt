@@ -1,6 +1,7 @@
 # Source files
 set(RETLDB_SOURCES
     common/error.c
+    common/db.c
     storage/file.c
     storage/mmap.c
     storage/buffer.c
