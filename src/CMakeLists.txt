@@ -12,6 +12,14 @@ set(RETLDB_SOURCES
 # Create the library
 add_library(retldb ${RETLDB_SOURCES})
 
+# Add MSVC-specific compiler flags
+if(MSVC)
+    target_compile_definitions(retldb PRIVATE 
+        _CRT_SECURE_NO_WARNINGS     # Disable warnings about "unsafe" functions
+        _CRT_NONSTDC_NO_DEPRECATE   # Disable warnings about POSIX function names
+    )
+endif()
+
 # Link dependencies
 target_link_libraries(retldb PRIVATE
     LZ4::LZ4

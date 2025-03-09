@@ -127,32 +127,32 @@ void* mmap_file(const char* filename, size_t size, int read_only) {
 }
 
 /**
- * @brief Get the address of the mapped memory
+ * @brief Get the memory address of a memory-mapped file
  * 
  * @param handle The memory-mapped file handle
- * @return Pointer to the mapped memory, NULL on failure
+ * @return The memory address, or NULL on error
  */
 void* mmap_get_addr(void* handle) {
     if (!handle) {
         return NULL;
     }
     
-    mmap_handle_t* mmap_handle = (mmap_handle_t*)handle;
+    const mmap_handle_t* mmap_handle = (const mmap_handle_t*)handle;
     return mmap_handle->addr;
 }
 
 /**
- * @brief Get the size of the mapped memory
+ * @brief Get the size of a memory-mapped file
  * 
  * @param handle The memory-mapped file handle
- * @return Size of the mapped memory, 0 on failure
+ * @return The size, or 0 on error
  */
 size_t mmap_get_size(void* handle) {
     if (!handle) {
         return 0;
     }
     
-    mmap_handle_t* mmap_handle = (mmap_handle_t*)handle;
+    const mmap_handle_t* mmap_handle = (const mmap_handle_t*)handle;
     return mmap_handle->size;
 }
 

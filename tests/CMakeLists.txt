@@ -35,4 +35,12 @@ find_program(GCOV_PATH gcov)
 if(GCOV_PATH AND CMAKE_COMPILER_IS_GNUCC)
     target_compile_options(retldb_tests PRIVATE --coverage)
     target_link_libraries(retldb_tests PRIVATE --coverage)
+endif()
+
+# Add MSVC-specific compiler flags
+if(MSVC)
+    add_compile_definitions(
+        _CRT_SECURE_NO_WARNINGS     # Disable warnings about "unsafe" functions
+        _CRT_NONSTDC_NO_DEPRECATE   # Disable warnings about POSIX function names
+    )
 endif() 
