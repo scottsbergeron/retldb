@@ -74,7 +74,7 @@ jobs:
         CC: ${{ matrix.cc }}
         CXX: ${{ matrix.cxx }}
       run: |
-        cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{matrix.build_type}} -DRETLDB_BUILD_TESTS=ON
+        cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{matrix.build_type}} -DRETLDB_BUILD_TESTS=ON -DCMAKE_MODULE_PATH=${{github.workspace}}/cmake
 
     - name: Build
       run: cmake --build ${{github.workspace}}/build --config ${{matrix.build_type}}
@@ -108,7 +108,7 @@ jobs:
 
     - name: Configure with ASAN
       run: |
-        cmake -B ${{github.workspace}}/build-asan -DCMAKE_BUILD_TYPE=Debug -DRETLDB_BUILD_TESTS=ON -DRETLDB_ENABLE_ASAN=ON
+        cmake -B ${{github.workspace}}/build-asan -DCMAKE_BUILD_TYPE=Debug -DRETLDB_BUILD_TESTS=ON -DRETLDB_ENABLE_ASAN=ON -DCMAKE_MODULE_PATH=${{github.workspace}}/cmake
 
     - name: Build with ASAN
       run: cmake --build ${{github.workspace}}/build-asan
@@ -119,7 +119,7 @@ jobs:
 
     - name: Configure with UBSAN
       run: |
-        cmake -B ${{github.workspace}}/build-ubsan -DCMAKE_BUILD_TYPE=Debug -DRETLDB_BUILD_TESTS=ON -DRETLDB_ENABLE_UBSAN=ON
+        cmake -B ${{github.workspace}}/build-ubsan -DCMAKE_BUILD_TYPE=Debug -DRETLDB_BUILD_TESTS=ON -DRETLDB_ENABLE_UBSAN=ON -DCMAKE_MODULE_PATH=${{github.workspace}}/cmake
 
     - name: Build with UBSAN
       run: cmake --build ${{github.workspace}}/build-ubsan
@@ -141,7 +141,7 @@ jobs:
 
     - name: Configure
       run: |
-        cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=Debug -DRETLDB_BUILD_TESTS=ON
+        cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=Debug -DRETLDB_BUILD_TESTS=ON -DCMAKE_MODULE_PATH=${{github.workspace}}/cmake
 
     - name: Build
       run: cmake --build ${{github.workspace}}/build
