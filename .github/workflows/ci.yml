@@ -72,14 +72,25 @@ jobs:
       if: matrix.os == 'windows-latest'
       run: |
         vcpkg install lz4:x64-windows snappy:x64-windows gtest:x64-windows
-        echo "CMAKE_TOOLCHAIN_FILE=$env:VCPKG_INSTALLATION_ROOT/scripts/buildsystems/vcpkg.cmake" >> $env:GITHUB_ENV
+        echo "CMAKE_TOOLCHAIN_FILE=$($env:VCPKG_INSTALLATION_ROOT -replace '\\', '/')/scripts/buildsystems/vcpkg.cmake" >> $env:GITHUB_ENV
 
-    - name: Configure CMake
+    - name: Configure CMake (Unix)
+      if: matrix.os != 'windows-latest'
       env:
         CC: ${{ matrix.cc }}
         CXX: ${{ matrix.cxx }}
       run: |
-        cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{matrix.build_type}} -DRETLDB_BUILD_TESTS=ON -DCMAKE_MODULE_PATH="${{github.workspace}}/cmake"
+        cmake -B "${{github.workspace}}/build" -DCMAKE_BUILD_TYPE=${{matrix.build_type}} -DRETLDB_BUILD_TESTS=ON -DCMAKE_MODULE_PATH="${{github.workspace}}/cmake"
+
+    - name: Configure CMake (Windows)
+      if: matrix.os == 'windows-latest'
+      env:
+        CC: ${{ matrix.cc }}
+        CXX: ${{ matrix.cxx }}
+      shell: pwsh
+      run: |
+        $cmake_module_path = "${{github.workspace}}/cmake" -replace '\\', '/'
+        cmake -B "${{github.workspace}}/build" -DCMAKE_BUILD_TYPE=${{matrix.build_type}} -DRETLDB_BUILD_TESTS=ON "-DCMAKE_MODULE_PATH=$cmake_module_path"
 
     - name: Build
       run: cmake --build ${{github.workspace}}/build --config ${{matrix.build_type}}
@@ -92,7 +103,7 @@ jobs:
       if: matrix.os == 'ubuntu-latest' && matrix.compiler == 'gcc' && matrix.build_type == 'Debug'
       run: |
         cd ${{github.workspace}}
-        cppcheck --enable=all --suppress=missingIncludeSystem --error-exitcode=1 include/ src/
+        cppcheck --enable=all --suppressions-list=.cppcheck --error-exitcode=1 include/ src/
 
     - name: Memory Check (Ubuntu)
       if: matrix.os == 'ubuntu-latest' && matrix.compiler == 'gcc' && matrix.build_type == 'Debug'
