@@ -3,7 +3,7 @@ find_package(GTest REQUIRED)
 
 # Test files
 set(RETLDB_TEST_SOURCES
-    test_main.c
+    test_main.cpp
     common/test_error.c
     storage/test_file.c
     storage/test_mmap.c
