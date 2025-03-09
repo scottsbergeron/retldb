@@ -53,7 +53,7 @@ set(SNAPPY_VERSION ${PC_SNAPPY_VERSION})
 
 # Handle the QUIETLY and REQUIRED arguments and set SNAPPY_FOUND
 include(FindPackageHandleStandardArgs)
-find_package_handle_standard_args(SNAPPY
+find_package_handle_standard_args(Snappy
   REQUIRED_VARS SNAPPY_LIBRARY SNAPPY_INCLUDE_DIR
   VERSION_VAR SNAPPY_VERSION
 )
