@@ -53,16 +53,21 @@ jobs:
       run: |
         sudo apt-get update
         sudo apt-get install -y liblz4-dev libsnappy-dev libgtest-dev valgrind clang-tidy cppcheck
+        # Create a symlink to help CMake find LZ4
+        sudo ln -s /usr/lib/x86_64-linux-gnu/pkgconfig/liblz4.pc /usr/lib/x86_64-linux-gnu/pkgconfig/LZ4.pc
 
     - name: Install Dependencies (macOS)
       if: matrix.os == 'macos-latest'
       run: |
         brew install lz4 snappy googletest llvm
+        # Export pkg-config path to help CMake find dependencies
+        echo "PKG_CONFIG_PATH=$(brew --prefix)/lib/pkgconfig" >> $GITHUB_ENV
 
     - name: Install Dependencies (Windows)
       if: matrix.os == 'windows-latest'
       run: |
         vcpkg install lz4:x64-windows snappy:x64-windows gtest:x64-windows
+        echo "CMAKE_TOOLCHAIN_FILE=$env:VCPKG_INSTALLATION_ROOT/scripts/buildsystems/vcpkg.cmake" >> $env:GITHUB_ENV
 
     - name: Configure CMake
       env:
