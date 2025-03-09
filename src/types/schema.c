@@ -1,277 +1,239 @@
 /**
  * @file schema.c
- * @brief Implementation of schema management for rETL DB
+ * @brief Implementation of schema-related functions for rETL DB
  */
 
-/* Define _POSIX_C_SOURCE to make strdup available */
-#define _POSIX_C_SOURCE 200809L
-
+#include "retldb/types.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stdint.h>
-
-// Forward declaration of data type
-typedef struct retldb_datatype_t retldb_datatype_t;
-
-/**
- * @brief Field structure
- */
-typedef struct {
-    char* name;                  // Field name
-    const retldb_datatype_t* type; // Field type
-    int nullable;                // Whether the field can be NULL
-    void* default_value;         // Default value for the field
-} retldb_field_t;
-
-/**
- * @brief Schema structure
- */
-typedef struct {
-    char* name;                  // Schema name
-    retldb_field_t* fields;      // Array of fields
-    int field_count;             // Number of fields
-    int field_capacity;          // Capacity of fields array
-} retldb_schema_t;
 
 /**
  * @brief Create a new schema
- * 
- * @param name Schema name
- * @return New schema, NULL on failure
  */
-retldb_schema_t* schema_create(const char* name) {
-    if (!name) {
-        return NULL;
+retldb_schema retldb_schema_create(const char* name, 
+                                 retldb_schema_field* fields, 
+                                 uint32_t field_count,
+                                 uint32_t* primary_key_indices,
+                                 uint32_t primary_key_count) {
+    retldb_schema schema;
+    memset(&schema, 0, sizeof(schema));
+    
+    // Copy name
+    if (name) {
+        schema.name = strdup(name);
     }
     
-    retldb_schema_t* schema = (retldb_schema_t*)malloc(sizeof(retldb_schema_t));
-    if (!schema) {
-        return NULL;
+    // Copy fields
+    if (field_count > 0 && fields) {
+        schema.field_count = field_count;
+        schema.fields = malloc(field_count * sizeof(retldb_schema_field));
+        
+        if (schema.fields) {
+            for (uint32_t i = 0; i < field_count; i++) {
+                // Copy field name
+                schema.fields[i].name = fields[i].name ? strdup(fields[i].name) : NULL;
+                
+                // Copy field type
+                schema.fields[i].type = fields[i].type;
+                
+                // Copy field description
+                schema.fields[i].description = fields[i].description ? strdup(fields[i].description) : NULL;
+            }
+        }
     }
     
-    schema->name = strdup(name);
-    if (!schema->name) {
-        free(schema);
-        return NULL;
+    // Copy primary key indices
+    if (primary_key_count > 0 && primary_key_indices) {
+        schema.primary_key_count = primary_key_count;
+        schema.primary_key_indices = malloc(primary_key_count * sizeof(uint32_t));
+        
+        if (schema.primary_key_indices) {
+            memcpy(schema.primary_key_indices, primary_key_indices, primary_key_count * sizeof(uint32_t));
+        }
     }
-    
-    schema->field_capacity = 10; // Initial capacity
-    schema->fields = (retldb_field_t*)malloc(schema->field_capacity * sizeof(retldb_field_t));
-    if (!schema->fields) {
-        free(schema->name);
-        free(schema);
-        return NULL;
-    }
-    
-    schema->field_count = 0;
     
     return schema;
 }
 
 /**
- * @brief Free a schema
- * 
- * @param schema Schema to free
+ * @brief Free resources associated with a schema
  */
-void schema_free(retldb_schema_t* schema) {
+void retldb_schema_free(retldb_schema* schema) {
     if (!schema) {
         return;
     }
     
+    // Free name
     if (schema->name) {
         free(schema->name);
+        schema->name = NULL;
     }
     
+    // Free fields
     if (schema->fields) {
-        for (int i = 0; i < schema->field_count; i++) {
+        for (uint32_t i = 0; i < schema->field_count; i++) {
             if (schema->fields[i].name) {
                 free(schema->fields[i].name);
             }
             
-            // In a real implementation, we would also free default_value
-            // based on the field type
+            if (schema->fields[i].description) {
+                free(schema->fields[i].description);
+            }
+            
+            // Note: We don't free the type itself, as it might be shared
         }
         
         free(schema->fields);
+        schema->fields = NULL;
     }
     
-    free(schema);
+    // Free primary key indices
+    if (schema->primary_key_indices) {
+        free(schema->primary_key_indices);
+        schema->primary_key_indices = NULL;
+    }
+    
+    schema->field_count = 0;
+    schema->primary_key_count = 0;
 }
 
 /**
- * @brief Add a field to a schema
+ * @brief Validate a value against a schema field
  * 
- * @param schema Schema to add the field to
- * @param name Field name
- * @param type Field type
- * @param nullable Whether the field can be NULL
- * @param default_value Default value for the field
- * @return 0 on success, non-zero on failure
+ * TODO: Implement proper validation for all types
  */
-int schema_add_field(retldb_schema_t* schema, const char* name,
-                     const retldb_datatype_t* type, int nullable,
-                     void* default_value) {
-    if (!schema || !name || !type) {
-        return -1;
+bool retldb_schema_validate_field(const retldb_value* value, const retldb_schema_field* field) {
+    if (!value || !field) {
+        return false;
     }
     
-    // Check if field already exists
-    for (int i = 0; i < schema->field_count; i++) {
-        if (strcmp(schema->fields[i].name, name) == 0) {
-            return -1; // Field already exists
-        }
+    // Check if value is NULL
+    if (value->is_null) {
+        // Check if field allows NULL values
+        return (field->type.flags & RETLDB_TYPE_FLAG_NULLABLE) != 0;
     }
     
-    // Resize fields array if needed
-    if (schema->field_count >= schema->field_capacity) {
-        int new_capacity = schema->field_capacity * 2;
-        retldb_field_t* new_fields = (retldb_field_t*)realloc(schema->fields,
-                                                             new_capacity * sizeof(retldb_field_t));
-        if (!new_fields) {
-            return -1;
-        }
-        
-        schema->fields = new_fields;
-        schema->field_capacity = new_capacity;
+    // Check if types match
+    if (value->type.id != field->type.id) {
+        return false;
     }
     
-    // Add the field
-    schema->fields[schema->field_count].name = strdup(name);
-    if (!schema->fields[schema->field_count].name) {
-        return -1;
-    }
+    // TODO: Implement type-specific validation
     
-    schema->fields[schema->field_count].type = type;
-    schema->fields[schema->field_count].nullable = nullable;
-    
-    // In a real implementation, we would copy default_value based on the field type
-    schema->fields[schema->field_count].default_value = default_value;
-    
-    schema->field_count++;
-    
-    return 0;
+    // For now, just return true if types match
+    return true;
 }
 
 /**
- * @brief Get a field from a schema by name
+ * @brief Find a field in a schema by name
  * 
- * @param schema Schema to get the field from
- * @param name Field name
- * @return Field, NULL if not found
+ * @param schema Schema to search in
+ * @param name Field name to find
+ * @return Field index if found, -1 otherwise
  */
-const retldb_field_t* schema_get_field(const retldb_schema_t* schema, const char* name) {
+int retldb_schema_find_field(const retldb_schema* schema, const char* name) {
     if (!schema || !name) {
-        return NULL;
+        return -1;
     }
     
-    for (int i = 0; i < schema->field_count; i++) {
-        if (strcmp(schema->fields[i].name, name) == 0) {
-            return &schema->fields[i];
+    for (uint32_t i = 0; i < schema->field_count; i++) {
+        if (schema->fields[i].name && strcmp(schema->fields[i].name, name) == 0) {
+            return (int)i;
         }
     }
     
-    return NULL;
+    return -1;
 }
 
 /**
- * @brief Get a field from a schema by index
+ * @brief Check if a field is part of the primary key
  * 
- * @param schema Schema to get the field from
- * @param index Field index
- * @return Field, NULL if index is out of bounds
+ * @param schema Schema to check
+ * @param field_index Field index to check
+ * @return true if field is part of primary key, false otherwise
  */
-const retldb_field_t* schema_get_field_by_index(const retldb_schema_t* schema, int index) {
-    if (!schema || index < 0 || index >= schema->field_count) {
-        return NULL;
+bool retldb_schema_is_primary_key(const retldb_schema* schema, uint32_t field_index) {
+    if (!schema || field_index >= schema->field_count) {
+        return false;
     }
     
-    return &schema->fields[index];
+    for (uint32_t i = 0; i < schema->primary_key_count; i++) {
+        if (schema->primary_key_indices[i] == field_index) {
+            return true;
+        }
+    }
+    
+    return false;
 }
 
 /**
- * @brief Get the number of fields in a schema
+ * @brief Serialize a schema to a binary representation
  * 
- * @param schema Schema to get the field count from
- * @return Number of fields, -1 on failure
+ * TODO: Implement schema serialization
  */
-int schema_get_field_count(const retldb_schema_t* schema) {
+int64_t retldb_schema_serialize(const retldb_schema* schema, uint8_t* buffer, size_t buffer_size) {
+    // TODO: Implement schema serialization
+    if (!schema || !buffer || buffer_size == 0) {
+        return -1;
+    }
+    
+    // For now, just return an error
+    return -1;
+}
+
+/**
+ * @brief Deserialize a schema from a binary representation
+ * 
+ * TODO: Implement schema deserialization
+ */
+int64_t retldb_schema_deserialize(const uint8_t* buffer, size_t buffer_size, retldb_schema* schema) {
+    // TODO: Implement schema deserialization
+    if (!buffer || buffer_size == 0 || !schema) {
+        return -1;
+    }
+    
+    // For now, just return an error
+    return -1;
+}
+
+/**
+ * @brief Create a copy of a schema
+ * 
+ * @param schema Schema to copy
+ * @return Copy of the schema
+ */
+retldb_schema retldb_schema_copy(const retldb_schema* schema) {
+    retldb_schema copy;
+    memset(&copy, 0, sizeof(copy));
+    
     if (!schema) {
-        return -1;
+        return copy;
     }
     
-    return schema->field_count;
+    return retldb_schema_create(schema->name, schema->fields, schema->field_count,
+                              schema->primary_key_indices, schema->primary_key_count);
 }
 
 /**
- * @brief Serialize a schema to a binary format
+ * @brief Get a string representation of a schema
  * 
- * @param schema Schema to serialize
- * @param size Pointer to store the size of the serialized data
- * @return Serialized data, NULL on failure
+ * TODO: Implement proper string representation
  */
-void* schema_serialize(const retldb_schema_t* schema, size_t* size) {
-    if (!schema || !size) {
-        return NULL;
-    }
-    
-    // In a real implementation, this would serialize the schema to a binary format
-    // For now, we just return a placeholder
-    *size = 0;
-    return NULL;
-}
-
-/**
- * @brief Deserialize a schema from a binary format
- * 
- * @param data Serialized data
- * @param size Size of the serialized data (unused for now)
- * @return Deserialized schema, NULL on failure
- */
-retldb_schema_t* schema_deserialize(const void* data, size_t size) {
-    if (!data) {
-        return NULL;
-    }
-    
-    // Suppress unused parameter warning
-    (void)size;
-    
-    // In a real implementation, this would deserialize the schema from a binary format
-    // For now, we just return a placeholder
-    return NULL;
-}
-
-/**
- * @brief Validate a schema
- * 
- * @param schema Schema to validate
- * @return 0 if valid, non-zero otherwise
- */
-int schema_validate(const retldb_schema_t* schema) {
-    if (!schema) {
+int64_t retldb_schema_to_string(const retldb_schema* schema, char* buffer, size_t buffer_size) {
+    if (!schema || !buffer || buffer_size == 0) {
         return -1;
     }
     
-    if (!schema->name) {
+    int result = snprintf(buffer, buffer_size, "Schema: %s (%u fields, %u primary key fields)",
+                         schema->name ? schema->name : "unnamed",
+                         schema->field_count, schema->primary_key_count);
+    
+    if (result < 0 || (size_t)result >= buffer_size) {
         return -1;
     }
     
-    if (schema->field_count <= 0) {
-        return -1; // Schema must have at least one field
-    }
+    // TODO: Add field details
     
-    for (int i = 0; i < schema->field_count; i++) {
-        if (!schema->fields[i].name) {
-            return -1;
-        }
-        
-        if (!schema->fields[i].type) {
-            return -1;
-        }
-        
-        // In a real implementation, we would also validate default_value
-        // based on the field type
-    }
-    
-    return 0;
+    return result;
 }

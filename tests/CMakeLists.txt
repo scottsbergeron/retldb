@@ -1,5 +1,6 @@
 # Find GTest
 find_package(GTest REQUIRED)
+include_directories(${GTEST_INCLUDE_DIRS})
 
 # Enable C++ support
 enable_language(CXX)
@@ -43,4 +44,16 @@ if(MSVC)
         _CRT_SECURE_NO_WARNINGS     # Disable warnings about "unsafe" functions
         _CRT_NONSTDC_NO_DEPRECATE   # Disable warnings about POSIX function names
     )
-endif() 
+endif()
+
+# Test executables
+add_executable(test_types types/test_types.c)
+target_link_libraries(test_types retldb ${GTEST_LIBRARIES} pthread)
+
+# Add tests to CTest
+add_test(NAME TypesTest COMMAND test_types)
+
+# Main test runner
+add_executable(test_main test_main.cpp)
+target_link_libraries(test_main ${GTEST_LIBRARIES} pthread)
+add_test(NAME MainTest COMMAND test_main) 
