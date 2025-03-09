@@ -29,7 +29,7 @@ int main(int argc, char** argv) {
     printf("Opening database file: %s\n", filename);
     err = retldb_db_open(filename, &db);
     if (err != RETLDB_OK) {
-        if (err == RETLDB_ERROR_NOT_IMPLEMENTED) {
+        if (err == RETLDB_ERROR_NOT_SUPPORTED) {
             printf("Database open not fully implemented yet. Continuing with example...\n");
         } else {
             printf("Failed to open database: %s\n", retldb_error_string(err));

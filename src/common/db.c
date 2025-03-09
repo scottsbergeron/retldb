@@ -28,7 +28,7 @@ retldb_error_t retldb_db_create(const char* path, retldb_db_t** db) {
     
     // Placeholder implementation
     *db = NULL;
-    return RETLDB_ERROR_NOT_IMPLEMENTED;
+    return RETLDB_ERROR_NOT_SUPPORTED;
 }
 
 /**
