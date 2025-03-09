@@ -132,7 +132,7 @@ void* mmap_file(const char* filename, size_t size, int read_only) {
  * @param handle The memory-mapped file handle
  * @return The memory address, or NULL on error
  */
-void* mmap_get_addr(void* handle) {
+void* mmap_get_addr(const void* handle) {
     if (!handle) {
         return NULL;
     }
@@ -147,7 +147,7 @@ void* mmap_get_addr(void* handle) {
  * @param handle The memory-mapped file handle
  * @return The size, or 0 on error
  */
-size_t mmap_get_size(void* handle) {
+size_t mmap_get_size(const void* handle) {
     if (!handle) {
         return 0;
     }
