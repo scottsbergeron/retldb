@@ -1,6 +1,9 @@
 # Find GTest
 find_package(GTest REQUIRED)
 
+# Enable C++ support
+enable_language(CXX)
+
 # Test files
 set(RETLDB_TEST_SOURCES
     test_main.cpp
@@ -14,6 +17,7 @@ set(RETLDB_TEST_SOURCES
 
 # Create test executable
 add_executable(retldb_tests ${RETLDB_TEST_SOURCES})
+set_target_properties(retldb_tests PROPERTIES LINKER_LANGUAGE CXX)
 
 # Link dependencies
 target_link_libraries(retldb_tests

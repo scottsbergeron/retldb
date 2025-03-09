@@ -13,7 +13,9 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
+        # Commenting out macOS to reduce costs
+        # os: [ubuntu-latest, macos-latest, windows-latest]
+        os: [ubuntu-latest, windows-latest]
         build_type: [Debug, Release]
         compiler: [gcc, clang, msvc]
         include:
@@ -25,10 +27,11 @@ jobs:
             compiler: clang
             cc: clang
             cxx: clang++
-          - os: macos-latest
-            compiler: clang
-            cc: clang
-            cxx: clang++
+          # Commenting out macOS configurations
+          # - os: macos-latest
+          #   compiler: clang
+          #   cc: clang
+          #   cxx: clang++
           - os: windows-latest
             compiler: msvc
             cc: cl
@@ -38,10 +41,11 @@ jobs:
             compiler: gcc
           - os: windows-latest
             compiler: clang
-          - os: macos-latest
-            compiler: gcc
-          - os: macos-latest
-            compiler: msvc
+          # Commenting out macOS exclusions
+          # - os: macos-latest
+          #   compiler: gcc
+          # - os: macos-latest
+          #   compiler: msvc
           - os: ubuntu-latest
             compiler: msvc
 
@@ -56,12 +60,13 @@ jobs:
         # Create a symlink to help CMake find LZ4
         sudo ln -s /usr/lib/x86_64-linux-gnu/pkgconfig/liblz4.pc /usr/lib/x86_64-linux-gnu/pkgconfig/LZ4.pc
 
-    - name: Install Dependencies (macOS)
-      if: matrix.os == 'macos-latest'
-      run: |
-        brew install lz4 snappy googletest llvm
-        # Export pkg-config path to help CMake find dependencies
-        echo "PKG_CONFIG_PATH=$(brew --prefix)/lib/pkgconfig" >> $GITHUB_ENV
+    # Commenting out macOS dependencies
+    # - name: Install Dependencies (macOS)
+    #   if: matrix.os == 'macos-latest'
+    #   run: |
+    #     brew install lz4 snappy googletest llvm
+    #     # Export pkg-config path to help CMake find dependencies
+    #     echo "PKG_CONFIG_PATH=$(brew --prefix)/lib/pkgconfig" >> $GITHUB_ENV
 
     - name: Install Dependencies (Windows)
       if: matrix.os == 'windows-latest'
