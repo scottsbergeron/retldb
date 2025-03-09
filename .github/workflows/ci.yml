@@ -4,7 +4,7 @@ on:
   push:
     branches: [ main ]
   pull_request:
-    branches: [ main ]
+    branches: [ '**' ]
 
 jobs:
   build:
@@ -15,6 +15,7 @@ jobs:
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
         build_type: [Debug, Release]
+        compiler: [gcc, clang, msvc]
         include:
           - os: ubuntu-latest
             compiler: gcc
@@ -39,6 +40,10 @@ jobs:
             compiler: clang
           - os: macos-latest
             compiler: gcc
+          - os: macos-latest
+            compiler: msvc
+          - os: ubuntu-latest
+            compiler: msvc
 
     steps:
     - uses: actions/checkout@v3
