@@ -468,8 +468,14 @@ void retldb_value_free(retldb_value* value) {
                 // TODO: Implement proper cleanup for map entries
                 if (value->value.map.entries) {
                     for (size_t i = 0; i < value->value.map.length; i++) {
-                        retldb_value_free(&value->value.map.entries[i].key);
-                        retldb_value_free(&value->value.map.entries[i].value);
+                        if (value->value.map.entries[i].key) {
+                            retldb_value_free((retldb_value*)value->value.map.entries[i].key);
+                            free(value->value.map.entries[i].key);
+                        }
+                        if (value->value.map.entries[i].value) {
+                            retldb_value_free((retldb_value*)value->value.map.entries[i].value);
+                            free(value->value.map.entries[i].value);
+                        }
                     }
                     free(value->value.map.entries);
                     value->value.map.entries = NULL;

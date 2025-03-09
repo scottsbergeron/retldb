@@ -203,6 +203,52 @@ TEST(TypesTest, ValidateSchemaField) {
     free(field.description);
 }
 
+// Test map value creation and manipulation
+TEST(TypesTest, MapValueOperations) {
+    // Create key and value types
+    retldb_type key_type = retldb_type_create(RETLDB_TYPE_STRING, RETLDB_TYPE_FLAG_NONE);
+    retldb_type value_type = retldb_type_create(RETLDB_TYPE_INT32, RETLDB_TYPE_FLAG_NONE);
+    
+    // Create map type
+    retldb_type map_type = retldb_type_create_map(key_type, value_type, RETLDB_TYPE_FLAG_NONE);
+    
+    // Create map value
+    retldb_value map_value = retldb_value_create(map_type);
+    
+    // Initialize map with capacity for 10 entries
+    map_value.value.map.capacity = 10;
+    map_value.value.map.entries = (retldb_map_entry*)malloc(10 * sizeof(retldb_map_entry));
+    map_value.value.map.length = 0;
+    
+    // Add a key-value pair
+    if (map_value.value.map.entries) {
+        // Create key
+        retldb_value* key = (retldb_value*)malloc(sizeof(retldb_value));
+        *key = retldb_value_create(key_type);
+        key->value.string.data = strdup("test_key");
+        key->value.string.length = strlen("test_key");
+        
+        // Create value
+        retldb_value* val = (retldb_value*)malloc(sizeof(retldb_value));
+        *val = retldb_value_create(value_type);
+        val->value.int32 = 42;
+        
+        // Add to map
+        map_value.value.map.entries[0].key = key;
+        map_value.value.map.entries[0].value = val;
+        map_value.value.map.length = 1;
+        
+        // Verify
+        EXPECT_EQ(map_value.value.map.length, 1);
+        EXPECT_STREQ(((retldb_value*)map_value.value.map.entries[0].key)->value.string.data, "test_key");
+        EXPECT_EQ(((retldb_value*)map_value.value.map.entries[0].value)->value.int32, 42);
+    }
+    
+    // Clean up
+    retldb_value_free(&map_value);
+    retldb_type_free(&map_type);
+}
+
 // Main function
 int main(int argc, char **argv) {
     ::testing::InitGoogleTest(&argc, argv);

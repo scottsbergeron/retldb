@@ -63,6 +63,10 @@ typedef struct {
     uint8_t scale;       /**< Number of digits after decimal point */
 } retldb_decimal_info;
 
+// Forward declaration for complex types
+struct retldb_type;
+struct retldb_value;
+
 /**
  * @brief Array type configuration
  */
@@ -111,9 +115,17 @@ typedef struct retldb_type {
 } retldb_type;
 
 /**
- * @brief Value container for any supported type
+ * @brief Map entry structure to avoid circular dependency
  */
 typedef struct {
+    void* key;   /**< Key value (pointer to retldb_value) */
+    void* value; /**< Value (pointer to retldb_value) */
+} retldb_map_entry;
+
+/**
+ * @brief Value container for any supported type
+ */
+typedef struct retldb_value {
     retldb_type type;          /**< Type metadata */
     bool is_null;              /**< Whether value is NULL */
     
@@ -152,10 +164,7 @@ typedef struct {
             size_t capacity;               /**< Allocated capacity */
         } array;
         struct {
-            struct {
-                struct retldb_value key;   /**< Map entry key */
-                struct retldb_value value; /**< Map entry value */
-            }* entries;
+            retldb_map_entry* entries;     /**< Map entries */
             size_t length;                 /**< Number of entries */
             size_t capacity;               /**< Allocated capacity */
         } map;
