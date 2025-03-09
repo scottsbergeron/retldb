@@ -17,6 +17,10 @@ extern int file_close(void* file);
  * @brief Main entry point for the bulk load example
  */
 int main(int argc, char** argv) {
+    // Mark parameters as unused to avoid compiler warnings
+    (void)argc;
+    (void)argv;
+    
     printf("rETL DB Bulk Load Example\n");
     printf("-------------------------\n");
     
