@@ -1,28 +1,19 @@
 /**
  * @file retldb.h
- * @brief Main header file for the rETL DB library
+ * @brief Main header file for rETL DB
  *
- * This file contains the public API for the rETL DB database system,
- * a specialized database designed for Reverse ETL scenarios.
+ * This file includes all the necessary headers for using rETL DB.
  */
 
 #ifndef RETLDB_H
 #define RETLDB_H
 
 #include <stdint.h>
+#include <stdbool.h>
 #include <stddef.h>
 
-/**
- * @brief Library version information
- */
-#define RETLDB_VERSION_MAJOR 0
-#define RETLDB_VERSION_MINOR 1
-#define RETLDB_VERSION_PATCH 0
-
-/* Include module-specific headers */
-#include "retldb/error.h"
 #include "retldb/types.h"
-#include "retldb/storage.h"
+#include "retldb/error.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -31,95 +22,92 @@ extern "C" {
 /**
  * @brief Database handle
  */
-typedef struct retldb_db_t retldb_db_t;
+typedef struct retldb_db retldb_db_t;
 
 /**
  * @brief Table handle
  */
-typedef struct retldb_table_t retldb_table_t;
+typedef struct retldb_table retldb_table_t;
 
 /**
  * @brief Column definition
  */
 typedef struct {
-    const char* name;     /**< Column name */
-    retldb_type_t type;   /**< Column data type */
-    int nullable;         /**< Whether the column can be NULL */
+    char* name;         /**< Column name */
+    retldb_type type;   /**< Column data type */
+    bool nullable;      /**< Whether column can be NULL */
+    bool primary_key;   /**< Whether column is part of primary key */
 } retldb_column_def_t;
 
 /**
- * @brief Create a new database
+ * @brief Open a database
  *
- * @param path Path to the database directory
- * @param db Pointer to store the database handle
- * @return retldb_error_t Error code
+ * @param path Path to database directory
+ * @param create_if_missing Create database if it doesn't exist
+ * @param db Output parameter for database handle
+ * @return Error code
  */
-retldb_error_t retldb_db_create(const char* path, retldb_db_t** db);
-
-/**
- * @brief Open an existing database
- *
- * @param path Path to the database directory
- * @param db Pointer to store the database handle
- * @return retldb_error_t Error code
- */
-retldb_error_t retldb_db_open(const char* path, retldb_db_t** db);
+retldb_error_t retldb_open(
+    const char* path,
+    bool create_if_missing,
+    retldb_db_t** db
+);
 
 /**
  * @brief Close a database
  *
  * @param db Database handle
- * @return retldb_error_t Error code
+ * @return Error code
  */
-retldb_error_t retldb_db_close(retldb_db_t* db);
+retldb_error_t retldb_close(retldb_db_t* db);
 
 /**
- * @brief Create a new schema
+ * @brief Create a table schema
  *
- * @param columns Array of column definitions
+ * @param name Table name
+ * @param columns Column definitions
  * @param num_columns Number of columns
- * @param schema Pointer to store the schema handle
- * @return retldb_error_t Error code
+ * @param schema Output parameter for schema
+ * @return Error code
  */
-retldb_error_t retldb_schema_create(
-    const retldb_column_def_t* columns,
-    size_t num_columns,
-    retldb_schema_t** schema
+retldb_error_t retldb_create_schema(
+    const char* name,
+    retldb_column_def_t* columns,
+    uint32_t num_columns,
+    retldb_schema** schema
 );
 
 /**
  * @brief Free a schema
  *
- * @param schema Schema handle
- * @return retldb_error_t Error code
+ * @param schema Schema to free
+ * @return Error code
  */
-retldb_error_t retldb_schema_free(retldb_schema_t* schema);
+retldb_error_t retldb_free_schema(retldb_schema* schema);
 
 /**
- * @brief Create a new table
+ * @brief Create a table
  *
  * @param db Database handle
- * @param name Table name
- * @param schema Schema handle
- * @param table Pointer to store the table handle
- * @return retldb_error_t Error code
+ * @param schema Table schema
+ * @param table Output parameter for table handle
+ * @return Error code
  */
-retldb_error_t retldb_table_create(
+retldb_error_t retldb_create_table(
     retldb_db_t* db,
-    const char* name,
-    retldb_schema_t* schema,
+    retldb_schema* schema,
     retldb_table_t** table
 );
 
 /**
- * @brief Open an existing table
+ * @brief Open a table
  *
  * @param db Database handle
  * @param name Table name
- * @param table Pointer to store the table handle
- * @return retldb_error_t Error code
+ * @param table Output parameter for table handle
+ * @return Error code
  */
-retldb_error_t retldb_table_open(
+retldb_error_t retldb_open_table(
     retldb_db_t* db,
     const char* name,
     retldb_table_t** table
@@ -129,18 +117,21 @@ retldb_error_t retldb_table_open(
  * @brief Close a table
  *
  * @param table Table handle
- * @return retldb_error_t Error code
+ * @return Error code
  */
-retldb_error_t retldb_table_close(retldb_table_t* table);
+retldb_error_t retldb_close_table(retldb_table_t* table);
 
 /**
- * @brief Get the library version
+ * @brief Drop a table
  *
- * @param major Pointer to store the major version
- * @param minor Pointer to store the minor version
- * @param patch Pointer to store the patch version
+ * @param db Database handle
+ * @param name Table name
+ * @return Error code
  */
-void retldb_version(int* major, int* minor, int* patch);
+retldb_error_t retldb_drop_table(
+    retldb_db_t* db,
+    const char* name
+);
 
 #ifdef __cplusplus
 }
