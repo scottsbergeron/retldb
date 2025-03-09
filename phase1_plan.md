@@ -14,21 +14,21 @@ This document provides a detailed implementation plan for Phase 1 of the rETL DB
 ### Week 1: Project Setup and Storage Format Design
 
 #### 1.1 Project Infrastructure (Days 1-2)
-- [ ] Create project repository structure
-- [ ] Set up build system (CMake)
-- [ ] Configure CI/CD pipeline with GitHub Actions
-  - [ ] Set up matrix builds for multiple platforms (Linux, macOS, Windows)
-  - [ ] Configure compiler variations (GCC, Clang, MSVC where applicable)
-  - [ ] Implement test automation with Google Test
-  - [ ] Set up code coverage reporting with Codecov
-  - [ ] Configure static analysis with Clang-Tidy and cppcheck
-  - [ ] Set up memory safety checks with ASAN, UBSAN, and Valgrind
-- [ ] Establish coding standards and documentation practices
-  - [ ] Configure Doxygen for API documentation
-  - [ ] Set up automatic documentation deployment to GitHub Pages
-- [ ] Create initial README and contribution guidelines
-  - [ ] Add CI status badges
-  - [ ] Create PR and issue templates
+- [x] Create project repository structure
+- [x] Set up build system (CMake)
+- [x] Configure CI/CD pipeline with GitHub Actions
+  - [x] Set up matrix builds for multiple platforms (Linux, macOS, Windows)
+  - [x] Configure compiler variations (GCC, Clang, MSVC where applicable)
+  - [x] Implement test automation with Google Test
+  - [x] Set up code coverage reporting with Codecov
+  - [x] Configure static analysis with Clang-Tidy and cppcheck
+  - [x] Set up memory safety checks with ASAN, UBSAN, and Valgrind
+- [x] Establish coding standards and documentation practices
+  - [x] Configure Doxygen for API documentation
+  - [x] Set up automatic documentation deployment to GitHub Pages
+- [x] Create initial README and contribution guidelines
+  - [x] Add CI status badges
+  - [x] Create PR and issue templates
 
 #### 1.2 Core Data Structures (Days 3-4)
 - [ ] Define basic data types (int, float, string, timestamp, etc.)
